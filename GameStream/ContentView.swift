@@ -31,6 +31,7 @@ struct InicioYRegistroView: View {
         VStack{
             HStack{
                 Text("INICIA SESIÓN")
+                    .foregroundColor(Color.white)
                 Text("REGÍSTRATE")
                     .foregroundColor(Color.white)
             }

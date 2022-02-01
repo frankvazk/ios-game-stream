@@ -60,7 +60,7 @@ struct InicioYRegistroView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-        Image("pantalla01")
+        Image("pantalla02")
             .resizable()
             .aspectRatio(
                 contentMode: .fill
@@ -202,9 +202,170 @@ struct LogIntView:View{
 }
 
 struct SignInView:View{
+    @State var correo : String = ""
+    @State var contrasena : String = ""
+    @State var confirmar_contrasena : String = ""
+    
+    
     var body: some View{
-        Text("Esta es la vista de registro")
-            .foregroundColor(Color.white)
+        ScrollView(showsIndicators: false){
+            Text("Elije una foto de perfil")
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .foregroundColor(Color("LightGray"))
+                .padding(.bottom, 5)
+            Text("Puedes cambiar p elegirla mñas adelante")
+                .font(.footnote)
+                .fontWeight(.light)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .foregroundColor(Color("LightGray"))
+                .padding(.bottom, 10)
+            Button(action: self.signIn, label: {
+                ZStack {
+                    Image("profile")
+                        .resizable()
+                        .aspectRatio( contentMode: .fit)
+                        .frame(width: 80, height: 80, alignment: .center)
+                    
+                    Image(systemName: "camera")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.white)
+                        .frame(width: 35, alignment: .center)
+                    
+                }
+            })
+                .padding(.bottom, 30)
+            
+            
+            VStack(alignment: .leading){
+                
+                VStack(alignment: .leading) {
+                    Text("Correo electrónico")
+                        .foregroundColor(Color("DarkCian"))
+                    .bold()
+                    ZStack(alignment: .leading){
+                        if correo.isEmpty {
+                            Text(verbatim:"ejemplo@gmail.com")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        TextField("", text: $correo)
+                            .foregroundColor(.white)
+                    }
+                    
+                    Divider()
+                        .frame(height: 1)
+                        .background(Color("DarkCian"))
+                        .padding(.bottom)
+                }
+                                            
+                VStack(alignment: .leading) {
+                    Text("Constraseña")
+                        .foregroundColor(.white)
+                    .bold()
+                    ZStack(alignment: .leading){
+                        if contrasena.isEmpty {
+                            Text("Escribe tu contraseña")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        SecureField("", text: $contrasena)
+                            .foregroundColor(.white)
+                    }
+                    
+                    Divider()
+                        .frame(height: 1)
+                        .background(Color("DarkCian"))
+                        .padding(.bottom)
+                }
+                
+                                        
+                VStack(alignment: .leading) {
+                    Text("Confirmar Constraseña")
+                        .foregroundColor(.white)
+                    .bold()
+                    
+                    ZStack(alignment: .leading){
+                        if confirmar_contrasena.isEmpty {
+                            Text("Vuelve a escribir contraseña")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        SecureField("", text: $confirmar_contrasena)
+                            .foregroundColor(.white)
+                    }
+                    
+                    Divider()
+                        .frame(height: 1)
+                        .background(Color("DarkCian"))
+                        .padding(.bottom)
+                }
+                
+                Button(action:self.iniciarSesion, label: {
+                    Text(
+                        "REGÍSTRATE"
+                    )
+                        .foregroundColor(.white)
+                        .bold()
+                        .padding(EdgeInsets(top: 11, leading: 18, bottom: 11, trailing: 18))
+                        .frame(
+                            maxWidth: .infinity, alignment: .center)
+                        .overlay( RoundedRectangle(cornerRadius: 6.0)
+                                    .stroke(Color("DarkCian"), lineWidth: 3.0)
+                                    .shadow(color: .white, radius: 4))
+                    
+                })
+                    .padding(.horizontal,10)
+                
+                Text("Regístrate con redes sociales")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(Color("LightGray"))
+                    .padding(.top, 50)
+                    .padding(.bottom, 10)
+                
+                HStack(alignment: .center){
+                    Spacer()
+                    Button( action: {
+                        print("Facebook")
+                    }, label: {
+                        Text("Facebook")
+                            .bold()
+                            .foregroundColor(Color.white)
+                            .frame(width: 120, alignment: .center)
+                            .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
+                            .background(
+                               Color("BlueGray")
+                            )
+                    }).cornerRadius(8.0)
+                    Button( action: {
+                        print("Twitter")
+                    }, label: {
+                        Text("Twitter")
+                            .bold()
+                            .foregroundColor(Color.white)
+                            .frame(width: 120, alignment: .center)
+                            .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
+                            .background(
+                               Color("BlueGray")
+                            )
+                    }).cornerRadius(8.0)
+                    Spacer()
+                }.frame(maxWidth: .infinity, alignment: .center)
+                
+            }.padding(.horizontal).frame(width: UIScreen.main.bounds.width, alignment: .leading)
+        }
+    }
+    
+    func iniciarSesion(){
+        print("Iniciar Sesión")
+    }
+    
+    func signIn(){
+        print("SignIn Button Action")
     }
 }
 

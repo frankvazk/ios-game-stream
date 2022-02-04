@@ -24,7 +24,7 @@ struct ContentView: View {
                 }
                 
             }
-            .navigationBarHidden(true)
+            .navigationBarHidden(true)            
         }
     }
 }

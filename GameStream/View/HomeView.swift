@@ -42,7 +42,7 @@ struct HomeView: View {
                 }
                 .tag(3)
         }
-        .accentColor(.white)
+        .accentColor(.white)        
     }
     
     init(){

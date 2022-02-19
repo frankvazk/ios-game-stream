@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct GamesView: View {
     @ObservedObject var videoGames = GamesViewModel()
@@ -27,7 +28,6 @@ struct GamesView: View {
         GridItem(.flexible())
     ]
     
-    
     var body: some View {
         ZStack{
             Color("Marine").ignoresSafeArea()
@@ -35,7 +35,7 @@ struct GamesView: View {
                 Text("Juegos")
                     .font(.title2)
                     .fontWeight(.bold)
-                    .padding(EdgeInsets(top: 16, leading: 0, bottom: 64, trailing: 0))
+                    .padding(EdgeInsets(top: 16, leading: 0, bottom: 30, trailing: 0))
                 
                 ScrollView(showsIndicators: false){
                     LazyVGrid(columns: gridShape, spacing: 8) {
@@ -51,9 +51,29 @@ struct GamesView: View {
                                 self.imgsUrl = game.galleryImages
                                 print("Pulse el juego \(self.title)")
                             } label: {
-                                Text(game.title)
+                                if let urlImage = URL(string: game.galleryImages[0]) {
+                                    if #available(iOS 15.0, *) {
+                                        AsyncImage(url: urlImage) { image in
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 160, height: 90)
+                                                .clipShape(RoundedRectangle(cornerRadius: 4))
+                                                .padding(.bottom, 12)
+                                                
+                                        } placeholder: {
+                                            placeHolderImage()
+                                        }
+                                    }
+                                    else{
+                                        KFImage(urlImage)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                                            .padding(.bottom, 12)
+                                    }
+                                }
                             }
-
                         }
                     }
                 }
@@ -66,6 +86,22 @@ struct GamesView: View {
             print("Título del primer videojuego del JSON: \(videoGames.gamesInfo[0].title)")
         }
                     
+    }
+    
+    @ViewBuilder
+    func placeHolderImage() -> some View {
+        ZStack{
+            RoundedRectangle(cornerRadius: 8.0)
+                .fill(Color("BlueGray"))
+                .frame(width: 160.0, height: 90.0)
+            
+            Image(systemName: "photo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 42.0, height: 42.0)
+            
+        }
+        .padding(.bottom, 12)
     }
 }
 

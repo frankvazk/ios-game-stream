@@ -19,11 +19,11 @@ struct Game : Codable {
     var description:String
     var platforms:[String]
     var tags:[String]
-    var videosUrls:VideoUrl
+    var videosUrls: videoUrl
     var galleryImages:[String]
 }
 
-struct VideoUrl : Codable {
+struct videoUrl : Codable {
     var mobile:String
-    var tables:String
+    var tablet:String
 }

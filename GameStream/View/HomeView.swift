@@ -33,6 +33,8 @@ struct HomeView: View {
                     Text("Inicio")
                 }
                 .tag(2)
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
             
             Text("Pantalla Favoritos")
                 .font(.system(size: 30, weight: .bold, design: .rounded))
@@ -42,7 +44,7 @@ struct HomeView: View {
                 }
                 .tag(3)
         }
-        .accentColor(.white)        
+        .accentColor(.white)
     }
     
     init(){
@@ -112,9 +114,7 @@ struct HomeTabView:View {
                 }
             }
             .padding(.horizontal, 18.0)
-        }
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
+        }        
     }
     
     func SearchVideos(){

@@ -15,7 +15,7 @@ struct GamesView: View {
     @State var title : String = ""
     @State var studio : String = ""
     @State var contentRating : String = ""
-    @State var publishedYear : String = ""
+    @State var publicationYear : String = ""
     @State var description : String = ""
     @State var tags:[String] = []
     @State var imgsUrl:[String] = []
@@ -46,10 +46,11 @@ struct GamesView: View {
                                 self.title = game.title
                                 self.studio = game.studio
                                 self.contentRating = game.contentRaiting
+                                self.publicationYear = game.publicationYear
                                 self.description = game.description
                                 self.tags = game.tags
                                 self.imgsUrl = game.galleryImages
-                                print("Pulse el juego \(self.title)")
+                                self.gameViewIsActive = true
                             } label: {
                                 if let urlImage = URL(string: game.galleryImages[0]) {
                                     if #available(iOS 15.0, *) {
@@ -59,7 +60,7 @@ struct GamesView: View {
                                                 .scaledToFit()
                                                 .frame(width: 160, height: 90)
                                                 .clipShape(RoundedRectangle(cornerRadius: 4))
-                                                .padding(.bottom, 12)
+                                                .padding(.bottom, 8)
                                                 
                                         } placeholder: {
                                             placeHolderImage()
@@ -78,6 +79,21 @@ struct GamesView: View {
                     }
                 }
             }.padding(.horizontal, 18.0)
+            
+            NavigationLink(isActive: $gameViewIsActive) {
+                GameView(
+                    url: self.url,
+                    title: self.title,
+                    studio: self.studio,
+                    contentRating: self.contentRating,
+                    publicationYear: self.publicationYear,
+                    description: self.description,
+                    tags: self.tags,
+                    imgsUrl: self.imgsUrl)
+            } label: {
+                EmptyView()
+            }
+
         }
         .navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
@@ -101,7 +117,7 @@ struct GamesView: View {
                 .frame(width: 42.0, height: 42.0)
             
         }
-        .padding(.bottom, 12)
+        .padding(.bottom, 8)
     }
 }
 

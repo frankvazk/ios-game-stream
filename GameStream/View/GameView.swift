@@ -23,6 +23,11 @@ struct GameView: View {
         GameComment(author: "Alvy Baack", date: "Hace 12 días", comment: "He visto que como media tiene una gran calificación, y estoy completamente de acuerdo. Es el mejor juego que he jugado sin ninguna duda, combina una buena trama con una buenísima experiencia de juego libre gracias a su inmenso mapa y actividades.")
     ]
     
+    var imgNames = [
+        "Rectangle 6",
+        "Rectangle 7"
+    ]
+    
     var body: some View {
         ZStack{
             Color("Marine")
@@ -39,7 +44,7 @@ struct GameView: View {
                     
                     GameGallery(imgsUrl : self.imgsUrl)
                     GameComments(comments: self.comments)
-                    SimilarGames()
+                    SimilarGames(imgNames: self.imgNames)
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -250,6 +255,7 @@ struct Comment : View {
 }
 
 struct SimilarGames : View {
+    var imgNames : [String]
     var body: some View {
         VStack(alignment: .leading) {
             Text("JUEGOS SIMILARES")
@@ -260,8 +266,16 @@ struct SimilarGames : View {
                 .padding(.top)
                 .padding(.bottom, 0)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            HStack{
-                
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack{
+                    ForEach(self.imgNames, id:\.self){
+                        img in
+                        Image(img)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 220, height:160)
+                    }
+                }
             }
         }
     }

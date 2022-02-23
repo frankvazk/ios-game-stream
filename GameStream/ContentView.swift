@@ -18,7 +18,7 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio( contentMode: .fit )
                     .padding(.bottom, 20)
-                .frame(width: 250)
+                    .frame(width: 250)
                 InicioYRegistroView()
             }
             
@@ -59,12 +59,13 @@ struct InicioYRegistroView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
+        ContentView()
         Image("pantalla01")
             .resizable()
             .aspectRatio(
                 contentMode: .fill
             )
-        ContentView()
+        
     }
 }
 
@@ -76,7 +77,7 @@ struct ActionButton : View{
     var body: some View{
         Button(self.text, action: self.action)
             .foregroundColor(self.isActive ? Color.white : Color.gray)
-            
+        
     }
     
     init(text:String, action: @escaping ()->Void, isActive: Bool){
@@ -87,9 +88,61 @@ struct ActionButton : View{
 }
 
 struct LogIntView:View{
+    @State var correo : String = ""
+    @State var contrasena : String = ""
+    
     var body: some View{
-        Text("Esta es la vista de inicio de sesion")
-            .foregroundColor(Color.white)
+        ScrollView{
+            VStack(alignment: .leading){
+                Text("Correo electrónico")
+                    .foregroundColor(Color("DarkCian"))
+                    .bold()
+                
+                ZStack(alignment: .leading){
+                    if correo.isEmpty {
+                        Text("ejemplo@gmail.com")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    
+                    TextField("", text: $correo)
+                        .foregroundColor(.white)
+                }
+                
+                Divider()
+                    .frame(height: 1)
+                    .background(Color("DarkCian"))
+                    .padding(.bottom)
+                
+                Text("Constraseña")
+                    .foregroundColor(.white)
+                    .bold()
+                
+                ZStack(alignment: .leading){
+                    if contrasena.isEmpty {
+                        Text("Escribe tu contraseña")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    
+                    SecureField("", text: $contrasena)
+                        .foregroundColor(.white)
+                }
+                
+                Divider()
+                    .frame(height: 1)
+                    .background(Color("DarkCian"))
+                    .padding(.bottom)
+                
+                Text("¿Olvidaste tu contraseña?")
+                    .font(.footnote)
+                    .frame(width: UIScreen.main.bounds.width-40,
+                           alignment: .trailing)
+                    .foregroundColor(Color("DarkCian"))
+                
+            }.frame(width: UIScreen.main.bounds.width-40, alignment: .leading)
+            
+        }
     }
 }
 
@@ -97,5 +150,15 @@ struct SignInView:View{
     var body: some View{
         Text("Esta es la vista de registro")
             .foregroundColor(Color.white)
+    }
+}
+
+extension View {
+    func placeholder<Content: View>(when shouldShow:Bool, aligment:Alignment = .leading,
+                                    placeholder: () -> Content
+    ) -> some View {
+        ZStack(alignment: .leading, content: {
+            placeholder().opacity(shouldShow ? 1 : 0)
+        })
     }
 }

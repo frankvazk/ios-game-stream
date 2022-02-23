@@ -64,6 +64,7 @@ struct HomeView_Previews: PreviewProvider {
 
 struct HomeTabView:View {
     @State var searchValue : String = ""
+    @State var isGameInfoEmpty : Bool = false
     let urlVideos : [String] = [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256671638/movie480.mp4",
@@ -84,12 +85,17 @@ struct HomeTabView:View {
                     .frame(width: 250)
                 HStack{
                     Button (
-                        action: SearchVideos,
+                        action: {
+                            SearchVideos(name:self.searchValue)
+                        },
                         label: {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(searchValue.isEmpty ? .yellow : Color("DarkCian") )
                         }
                     )
+                        .alert(isPresented: $isGameInfoEmpty) {
+                            Alert(title: Text("Error"), message: Text("No se encontró el juego"), dismissButton: .default(Text("Entendido")))
+                        }
                     
                     ZStack(alignment: Alignment.leading ){
                         if searchValue.isEmpty {
@@ -117,8 +123,11 @@ struct HomeTabView:View {
         }        
     }
     
-    func SearchVideos(){
-        print("Estamos buscando videos que coincidan con \(self.searchValue)")
+    func SearchVideos( name : String ){
+        if name.isEmpty{
+            self.isGameInfoEmpty = true
+        }
+        print("Estamos buscando videos que coincidan con \(name)")
     }
 }
 

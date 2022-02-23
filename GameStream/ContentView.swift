@@ -9,19 +9,22 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        ZStack{
-            Color(red: 19/255, green: 30/255, blue: 53/255, opacity: 1.0)
-                .ignoresSafeArea()
-            
-            VStack {
-                Image("applogo")
-                    .resizable()
-                    .aspectRatio( contentMode: .fit )
-                    .padding(.bottom, 20)
-                    .frame(width: 250)
-                InicioYRegistroView()
+        NavigationView {
+            ZStack{
+                Color(red: 19/255, green: 30/255, blue: 53/255, opacity: 1.0)
+                    .ignoresSafeArea()
+                
+                VStack {
+                    Image("applogo")
+                        .resizable()
+                        .aspectRatio( contentMode: .fit )
+                        .padding(.bottom, 20)
+                        .frame(width: 250)
+                    InicioYRegistroView()
+                }
+                
             }
-            
+            .navigationBarHidden(true)
         }
     }
 }
@@ -90,6 +93,7 @@ struct ActionButton : View{
 struct LogIntView:View{
     @State var correo : String = ""
     @State var contrasena : String = ""
+    @State var isHomeActive = false
     
     var body: some View{
         ScrollView(showsIndicators: false){
@@ -193,11 +197,13 @@ struct LogIntView:View{
                 }.frame(maxWidth: .infinity, alignment: .center)
                 
             }.padding(.horizontal).frame(width: UIScreen.main.bounds.width, alignment: .leading)
+            
+            NavigationLink(isActive: $isHomeActive, destination: { HomeView() }, label: { EmptyView() })
         }
     }
     
     func iniciarSesion(){
-        print("Iniciar Sesión")
+        self.isHomeActive = true        
     }
 }
 

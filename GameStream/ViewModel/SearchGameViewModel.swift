@@ -29,12 +29,12 @@ class SearchGameViewModel : ObservableObject {
                             //Se decodifica el información tomando como estructura de datos
                             //la estructura Game definida en el ViewModel
                             let decodedData = try
-                                JSONDecoder().decode([Game].self, from: jsonData)
+                                JSONDecoder().decode(Results.self, from: jsonData)
                             
                             //Se almacena de manera asíncrona la información dentro de la varible gamesInfo
                             //Esto permitirá que la aplicación no se bloquee al procesar los datos
                             DispatchQueue.main.async {
-                                self.gamesFounded.append(contentsOf: decodedData)
+                                self.gamesFounded.append(contentsOf: decodedData.results)
                             }
                         }
                         else

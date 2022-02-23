@@ -65,6 +65,17 @@ struct HomeView_Previews: PreviewProvider {
 struct HomeTabView:View {
     @State var searchValue : String = ""
     @State var isGameInfoEmpty : Bool = false
+    @ObservedObject var foundedGames = SearchGameViewModel()
+    @State var isGameViewActive : Bool = false
+    @State var url : String = ""
+    @State var title : String = ""
+    @State var studio : String = ""
+    @State var contentRating : String = ""
+    @State var publicationYear : String = ""
+    @State var description : String = ""
+    @State var tags:[String] = []
+    @State var imgsUrl:[String] = []
+    
     let urlVideos : [String] = [
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4",
         "https://cdn.cloudflare.steamstatic.com/steam/apps/256671638/movie480.mp4",
@@ -76,6 +87,20 @@ struct HomeTabView:View {
     ]
     var body: some View {
         ZStack{
+            NavigationLink(isActive: self.$isGameViewActive) {
+                GameView(
+                    url: self.url,
+                    title: self.title,
+                    studio: self.studio,
+                    contentRating: self.contentRating,
+                    publicationYear: self.publicationYear,
+                    description: self.description,
+                    tags: self.tags,
+                    imgsUrl: self.imgsUrl)
+            } label: {
+                EmptyView()
+            }
+            
             Color("Marine").ignoresSafeArea()
             VStack {
                 Image("applogo")
@@ -120,21 +145,50 @@ struct HomeTabView:View {
                 }
             }
             .padding(.horizontal, 18.0)
-        }        
+        }
     }
     
     func SearchVideos( name : String ){
         if name.isEmpty{
             self.isGameInfoEmpty = true
         }
-        print("Estamos buscando videos que coincidan con \(name)")
+        else{
+            self.foundedGames.search(gameName: name)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                print("Cantidad E: \(self.foundedGames.gamesFounded.count)")
+                if self.foundedGames.gamesFounded.count == 0 {
+                    self.isGameInfoEmpty = true
+                }
+                else{
+                    self.url = self.foundedGames.gamesFounded[0].videosUrls.mobile
+                    self.title = self.foundedGames.gamesFounded[0].title
+                    self.studio = self.foundedGames.gamesFounded[0].studio
+                    self.contentRating = self.foundedGames.gamesFounded[0].contentRaiting
+                    self.publicationYear = self.foundedGames.gamesFounded[0].publicationYear
+                    self.description = self.foundedGames.gamesFounded[0].description
+                    self.tags = self.foundedGames.gamesFounded[0].tags
+                    self.imgsUrl = self.foundedGames.gamesFounded[0].galleryImages
+                    self.isGameViewActive = true
+                }
+            }
+        }
     }
 }
 
 struct PopularGameView:View{
-    var defaultUrl : String = "https://cdn.cloudflare.steamstatic.com/steam/apps/256658589/movie480.mp4"
-    var urlVideo : String = "";
-    @State var isPlayerActive : Bool = false
+    var urlVideo : String
+    @State var isGameInfoEmpty : Bool = false
+    @ObservedObject var foundedGames = SearchGameViewModel()
+    @State var isGameViewActive : Bool = false
+    @State var url : String = ""
+    @State var title : String = ""
+    @State var studio : String = ""
+    @State var contentRating : String = ""
+    @State var publicationYear : String = ""
+    @State var description : String = ""
+    @State var tags:[String] = []
+    @State var imgsUrl:[String] = []
+    
     var body: some View{
         VStack(alignment: .leading) {
             Text("LOS MAS POPULARES")
@@ -144,8 +198,7 @@ struct PopularGameView:View{
             
             ZStack{
                 Button(action: {
-                    print("URL \(self.urlVideo)")
-                    self.isPlayerActive = true
+                    SearchVideos(name:"The Witcher 3")
                 }, label: {
                     VStack(spacing:0) {
                         Image("The Witcher 3")
@@ -157,6 +210,9 @@ struct PopularGameView:View{
                             .background(Color("BlueGray"))
                     }
                 })
+                    .alert(isPresented: $isGameInfoEmpty) {
+                        Alert(title: Text("Error"), message: Text("No se encontró el juego"), dismissButton: .default(Text("Entendido")))
+                    }
                 
                 Image(systemName: "play.circle.fill")
                     .resizable()
@@ -168,11 +224,16 @@ struct PopularGameView:View{
         }.frame(minWidth:0, maxWidth: .infinity, alignment: .center)
             .padding(.vertical)
                 
-        NavigationLink(isActive: self.$isPlayerActive) {
-            if let url = URL(string: self.urlVideo) {
-                VideoPlayer(player: AVPlayer(url: url ))
-                    .frame(width: 400, height: 300)
-            }
+        NavigationLink(isActive: self.$isGameViewActive) {
+            GameView(
+                url: self.url,
+                title: self.title,
+                studio: self.studio,
+                contentRating: self.contentRating,
+                publicationYear: self.publicationYear,
+                description: self.description,
+                tags: self.tags,
+                imgsUrl: self.imgsUrl)
         } label: {
             EmptyView()
         }
@@ -181,6 +242,27 @@ struct PopularGameView:View{
     init(_ urlVideo:String){
         self.urlVideo = urlVideo
         print(self.urlVideo)
+    }
+    
+    func SearchVideos( name : String ){
+        self.foundedGames.search(gameName: name)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+            print("Cantidad E: \(self.foundedGames.gamesFounded.count)")
+            if self.foundedGames.gamesFounded.count == 0 {
+                self.isGameInfoEmpty = true
+            }
+            else{
+                self.url = self.foundedGames.gamesFounded[0].videosUrls.mobile
+                self.title = self.foundedGames.gamesFounded[0].title
+                self.studio = self.foundedGames.gamesFounded[0].studio
+                self.contentRating = self.foundedGames.gamesFounded[0].contentRaiting
+                self.publicationYear = self.foundedGames.gamesFounded[0].publicationYear
+                self.description = self.foundedGames.gamesFounded[0].description
+                self.tags = self.foundedGames.gamesFounded[0].tags
+                self.imgsUrl = self.foundedGames.gamesFounded[0].galleryImages
+                self.isGameViewActive = true
+            }
+        }
     }
 }
 
@@ -252,9 +334,19 @@ struct SuggestedCategoriesView:View{
 }
 
 struct RecommendedGamesView:View{
-    @State var isPlayerActive : Bool = false
-    @State var urlVideo : String = "";
     var recommendedGamesURLs : [String]
+    @State var isGameInfoEmpty : Bool = false
+    @ObservedObject var foundedGames = SearchGameViewModel()
+    @State var isGameViewActive : Bool = false
+    @State var url : String = ""
+    @State var title : String = ""
+    @State var studio : String = ""
+    @State var contentRating : String = ""
+    @State var publicationYear : String = ""
+    @State var description : String = ""
+    @State var tags:[String] = []
+    @State var imgsUrl:[String] = []
+    
     var body: some View{
         VStack(alignment: .leading) {
             Text("RECOMENDADOS PARA TI")
@@ -266,18 +358,19 @@ struct RecommendedGamesView:View{
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack{
                     Button {
-                        self.urlVideo = self.recommendedGamesURLs[0]
-                        self.isPlayerActive = true
+                        self.SearchVideos( name : "Abzu" )
                     } label: {
                         Image("Abzu")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 240.0, height: 135.0)
                     }
+                    .alert(isPresented: $isGameInfoEmpty) {
+                        Alert(title: Text("Error"), message: Text("No se encontró el juego"), dismissButton: .default(Text("Entendido")))
+                    }
                     
                     Button {
-                        self.urlVideo = self.recommendedGamesURLs[1]
-                        self.isPlayerActive = true
+                        self.SearchVideos( name : "Crash Bandicoot" )
                     } label: {
                         Image("Crash Bandicoot")
                             .resizable()
@@ -286,8 +379,7 @@ struct RecommendedGamesView:View{
                     }
                     
                     Button {
-                        self.urlVideo = self.recommendedGamesURLs[2]
-                        self.isPlayerActive = true
+                        self.SearchVideos( name : "Cuphead" )
                     } label: {
                         Image("Cuphead")
                             .resizable()
@@ -301,11 +393,16 @@ struct RecommendedGamesView:View{
         }.frame(minWidth:0, maxWidth: .infinity, alignment: .center)
             .padding(.vertical)
         
-        NavigationLink(isActive: self.$isPlayerActive) {
-            if let url = URL(string: self.urlVideo) {
-                VideoPlayer(player: AVPlayer(url: url ))
-                    .frame(width: 400, height: 300)
-            }
+        NavigationLink(isActive: self.$isGameViewActive) {
+            GameView(
+                url: self.url,
+                title: self.title,
+                studio: self.studio,
+                contentRating: self.contentRating,
+                publicationYear: self.publicationYear,
+                description: self.description,
+                tags: self.tags,
+                imgsUrl: self.imgsUrl)
         } label: {
             EmptyView()
         }
@@ -314,12 +411,43 @@ struct RecommendedGamesView:View{
     init(_ recommendedGamesURLs:[String]){
         self.recommendedGamesURLs = recommendedGamesURLs
     }
+    
+    func SearchVideos( name : String ){
+        self.foundedGames.search(gameName: name)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+            print("Cantidad E: \(self.foundedGames.gamesFounded.count)")
+            if self.foundedGames.gamesFounded.count == 0 {
+                self.isGameInfoEmpty = true
+            }
+            else{
+                self.url = self.foundedGames.gamesFounded[0].videosUrls.mobile
+                self.title = self.foundedGames.gamesFounded[0].title
+                self.studio = self.foundedGames.gamesFounded[0].studio
+                self.contentRating = self.foundedGames.gamesFounded[0].contentRaiting
+                self.publicationYear = self.foundedGames.gamesFounded[0].publicationYear
+                self.description = self.foundedGames.gamesFounded[0].description
+                self.tags = self.foundedGames.gamesFounded[0].tags
+                self.imgsUrl = self.foundedGames.gamesFounded[0].galleryImages
+                self.isGameViewActive = true
+            }
+        }
+    }
 }
 
 struct SuggestedGamesView:View{
-    @State var isPlayerActive : Bool = false
-    @State var urlVideo : String = "";
     var suggestedGamesURLs : [String]
+    @State var isGameInfoEmpty : Bool = false
+    @ObservedObject var foundedGames = SearchGameViewModel()
+    @State var isGameViewActive : Bool = false
+    @State var url : String = ""
+    @State var title : String = ""
+    @State var studio : String = ""
+    @State var contentRating : String = ""
+    @State var publicationYear : String = ""
+    @State var description : String = ""
+    @State var tags:[String] = []
+    @State var imgsUrl:[String] = []
+    
     
     var body: some View{
         VStack(alignment: .leading) {
@@ -332,18 +460,19 @@ struct SuggestedGamesView:View{
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack{
                     Button {
-                        self.urlVideo = self.suggestedGamesURLs[0]
-                        self.isPlayerActive = true
+                        self.SearchVideos(name: "DEATH STRANDING")
                     } label: {
                         Image("DEATH STRANDING")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 240.0, height: 135.0)
                     }
+                    .alert(isPresented: $isGameInfoEmpty) {
+                        Alert(title: Text("Error"), message: Text("No se encontró el juego"), dismissButton: .default(Text("Entendido")))
+                    }
                     
                     Button {
-                        self.urlVideo = self.suggestedGamesURLs[1]
-                        self.isPlayerActive = true
+                        self.SearchVideos(name: "Grand Theft Auto V")
                     } label: {
                         Image("Grand Theft Auto V")
                             .resizable()
@@ -352,8 +481,7 @@ struct SuggestedGamesView:View{
                     }
                     
                     Button {
-                        self.urlVideo = self.suggestedGamesURLs[2]
-                        self.isPlayerActive = true
+                        self.SearchVideos(name: "Hades")
                     } label: {
                         Image("Hades")
                             .resizable()
@@ -367,11 +495,16 @@ struct SuggestedGamesView:View{
         }.frame(minWidth:0, maxWidth: .infinity, alignment: .center)
             .padding(.vertical)
         
-        NavigationLink(isActive: self.$isPlayerActive) {
-            if let url = URL(string: self.urlVideo) {
-                VideoPlayer(player: AVPlayer(url: url ))
-                    .frame(width: 400, height: 300)
-            }
+        NavigationLink(isActive: self.$isGameViewActive) {
+            GameView(
+                url: self.url,
+                title: self.title,
+                studio: self.studio,
+                contentRating: self.contentRating,
+                publicationYear: self.publicationYear,
+                description: self.description,
+                tags: self.tags,
+                imgsUrl: self.imgsUrl)
         } label: {
             EmptyView()
         }
@@ -380,6 +513,27 @@ struct SuggestedGamesView:View{
     
     init(_ suggestedGamesURLs:[String]){
         self.suggestedGamesURLs = suggestedGamesURLs
+    }
+    
+    func SearchVideos( name : String ){
+        self.foundedGames.search(gameName: name)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+            print("Cantidad E: \(self.foundedGames.gamesFounded.count)")
+            if self.foundedGames.gamesFounded.count == 0 {
+                self.isGameInfoEmpty = true
+            }
+            else{
+                self.url = self.foundedGames.gamesFounded[0].videosUrls.mobile
+                self.title = self.foundedGames.gamesFounded[0].title
+                self.studio = self.foundedGames.gamesFounded[0].studio
+                self.contentRating = self.foundedGames.gamesFounded[0].contentRaiting
+                self.publicationYear = self.foundedGames.gamesFounded[0].publicationYear
+                self.description = self.foundedGames.gamesFounded[0].description
+                self.tags = self.foundedGames.gamesFounded[0].tags
+                self.imgsUrl = self.foundedGames.gamesFounded[0].galleryImages
+                self.isGameViewActive = true
+            }
+        }
     }
 }
 

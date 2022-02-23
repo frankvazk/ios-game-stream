@@ -35,6 +35,7 @@ struct GamesView: View {
                 Text("Juegos")
                     .font(.title2)
                     .fontWeight(.bold)
+                    .foregroundColor(.white)
                     .padding(EdgeInsets(top: 16, leading: 0, bottom: 30, trailing: 0))
                 
                 ScrollView(showsIndicators: false){

@@ -12,8 +12,7 @@ struct HomeView: View {
     @State var selectedTab : Int = 2
     var body: some View {
         TabView(selection: $selectedTab) {
-            Text("Pantalla Perfil")
-                .font(.system(size: 30, weight: .bold, design: .rounded))
+            ProfileView()
                 .tabItem {
                     Image(systemName: "person")
                     Text("Pefil")

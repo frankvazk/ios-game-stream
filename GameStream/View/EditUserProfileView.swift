@@ -46,6 +46,7 @@ struct ProfileForm : View {
     @State var username : String = ""
     @State var password : String = ""
     @State var email    : String = ""
+    @State var isDataSaved : Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -128,12 +129,23 @@ struct ProfileForm : View {
                 
             })
                 .padding(.horizontal,10)
+                .alert(isPresented: self.$isDataSaved) {
+                    Alert(title: Text("Editar Perfil"), message: Text("La información se ha guardado correctamente"), dismissButton: .default(Text("Ok")))
+                }
         }
         .padding(.horizontal, 20.0)
     }
     
     func updateUserProfile(){
-        
+        let editUserProfile = EditUserProfileViewModel()
+        if editUserProfile.save(User(username: self.username, password: self.password, email: self.email)){
+            self.isDataSaved = true
+            print("La información se guardo correctamente")
+        }
+        else{
+            print("Ocurrió un error al guardar la información")
+        }
+            
     }
 }
 

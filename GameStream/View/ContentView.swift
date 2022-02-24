@@ -93,7 +93,8 @@ struct ActionButton : View{
 struct LogIntView:View{
     @State var correo : String = ""
     @State var contrasena : String = ""
-    @State var isHomeActive = false
+    @State var isHomeActive : Bool = false
+    @State var loginError : Bool = false
     
     var body: some View{
         ScrollView(showsIndicators: false){
@@ -160,6 +161,9 @@ struct LogIntView:View{
                     
                 })
                     .padding(.horizontal,10)
+                    .alert(isPresented: self.$loginError) {
+                        Alert(title: Text("Login"), message: Text("Los datos son incorrectos"), dismissButton: .default(Text("Aceptar")))
+                    }
                 
                 Text("Inicia sesion con redes sociales")
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -203,7 +207,18 @@ struct LogIntView:View{
     }
     
     func iniciarSesion(){
-        self.isHomeActive = true        
+        let userViewModel = EditUserProfileViewModel()
+        if let result = userViewModel.login(User(password: self.contrasena, email: self.correo)){
+            if result {
+                self.isHomeActive = true
+            }
+            else{
+                self.loginError = true
+            }
+        }
+        else{
+            self.loginError = true
+        }
     }
 }
 
@@ -211,7 +226,9 @@ struct SignInView:View{
     @State var correo : String = ""
     @State var contrasena : String = ""
     @State var confirmar_contrasena : String = ""
-    
+    @State var signInError : Bool = false
+    @State var signInErrorMessage : String = ""
+    @State var isHomeViewActive : Bool = false
     
     var body: some View{
         ScrollView(showsIndicators: false){
@@ -226,7 +243,7 @@ struct SignInView:View{
                 .frame(maxWidth: .infinity, alignment: .center)
                 .foregroundColor(Color("LightGray"))
                 .padding(.bottom, 10)
-            Button(action: self.signIn, label: {
+            Button(action: self.changeProfilePicture, label: {
                 ZStack {
                     Image("profile")
                         .resizable()
@@ -311,7 +328,7 @@ struct SignInView:View{
                         .padding(.bottom)
                 }
                 
-                Button(action:self.iniciarSesion, label: {
+                Button(action:self.signIn, label: {
                     Text(
                         "REGÍSTRATE"
                     )
@@ -364,13 +381,34 @@ struct SignInView:View{
                 
             }.padding(.horizontal).frame(width: UIScreen.main.bounds.width, alignment: .leading)
         }
-    }
-    
-    func iniciarSesion(){
-        print("Iniciar Sesión")
+        
+        NavigationLink(isActive: self.$isHomeViewActive) {
+            HomeView()
+        } label: {
+            EmptyView()
+        }
+
     }
     
     func signIn(){
+        let userViewModel = EditUserProfileViewModel()
+        if self.contrasena != self.confirmar_contrasena {
+            self.signInErrorMessage = "Las contraseñas no coinciden"
+            self.signInError = true
+        }
+        else
+        {
+            if userViewModel.save(User(password: self.contrasena, email: self.correo)) {
+                self.isHomeViewActive = true
+            }
+            else{
+                self.signInErrorMessage = "Ocurrió un error al intentar registrarte. Inténtalo nuevamente."
+                self.signInError = true
+            }
+        }
+    }
+    
+    func changeProfilePicture(){
         print("SignIn Button Action")
     }
 }

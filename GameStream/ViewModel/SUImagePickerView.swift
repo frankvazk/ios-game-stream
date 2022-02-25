@@ -43,9 +43,25 @@ class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIIm
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            self.image = Image(uiImage: image)
+//        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+//            self.image = Image(uiImage: image)
+//        }
+        if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.image = Image(uiImage: uiImage)
+            
+            if let data = uiImage.pngData() {
+                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let url = documents.appendingPathComponent("profilePicture.png")
+                
+                do{
+                    try data.write(to: url)
+                }catch{
+                    print("No se pudo guardar la fotografia en el dispositivo. \(error)")
+                }
+            }
+            
         }
+        
         self.isPresented = false
     }
     

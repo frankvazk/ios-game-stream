@@ -29,6 +29,7 @@
 /* Begin PBXFileReference section */
 		C5120A2127C07F4E001CC539 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		C51A0BDD27C84ACD00FABF52 /* SUImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SUImagePickerView.swift; sourceTree = "<group>"; };
+		C51A0BDF27C8563700FABF52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C558D68C27C6E5B900DC025F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C558D68E27C6EEDC00DC025F /* EditUserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserProfileView.swift; sourceTree = "<group>"; };
 		C558D69027C701AF00DC025F /* EditUserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserProfileViewModel.swift; sourceTree = "<group>"; };
@@ -111,6 +112,7 @@
 		C5FA3F392796419B0035512A /* GameStream */ = {
 			isa = PBXGroup;
 			children = (
+				C51A0BDF27C8563700FABF52 /* Info.plist */,
 				C5AEBF1627ACB53E00C1FACE /* Model */,
 				C5AEBF1727ACB54600C1FACE /* View */,
 				C5AEBF1827ACB55100C1FACE /* ViewModel */,
@@ -352,6 +354,8 @@
 				DEVELOPMENT_TEAM = BU8ZH96GXD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GameStream/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Se utiliza cámara para tomar foto de perfil";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -381,6 +385,8 @@
 				DEVELOPMENT_TEAM = BU8ZH96GXD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GameStream/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Se utiliza cámara para tomar foto de perfil";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

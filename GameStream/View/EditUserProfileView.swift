@@ -27,7 +27,7 @@ struct EditUserProfileView: View {
                             .frame(width: 118, height: 118)
                             .clipShape(Circle())
                             .sheet(isPresented: self.$isCameraActive, content: {
-                                SUImagePickerView(sourceType: .photoLibrary, image: self.$profileImage, isPresented: self.$isCameraActive)
+                                SUImagePickerView(sourceType: .camera, image: self.$profileImage, isPresented: self.$isCameraActive)
                             })
                         
                         Image(systemName: "camera")

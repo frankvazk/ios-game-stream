@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @State var username : String = "Francisco"
+    @State var profilePicture : UIImage = UIImage(named: "profile")!
     
     var body: some View {
         ZStack{
@@ -18,6 +19,7 @@ struct ProfileView: View {
                 .navigationBarHidden(true)
                 
             VStack{
+                
                 Text("Perfil")
                     .foregroundColor(.white)
                     .font(.title2)
@@ -25,11 +27,12 @@ struct ProfileView: View {
                     .padding(EdgeInsets(top: 16, leading: 0, bottom: 30, trailing: 0))
                 
                 VStack{
-                    Image("profile")
+                    Image(uiImage: self.profilePicture)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 118.0, height: 118.0, alignment: .center)
                         .clipShape(Circle())
+                                        
                 }
                 
                 Text("AJUSTES")
@@ -44,8 +47,22 @@ struct ProfileView: View {
             
         }
         .onAppear(perform: {
-            print("Revisando si tengo datos de usuario en mis users defaults")
+            if self.loadProfileImage(named: "profilePicture") != nil {
+                self.profilePicture = self.loadProfileImage(named: "profilePicture")!
+            }
+            else{
+                print("No se encontro la imagen")
+            }
         })
+    }
+    
+    func loadProfileImage( named: String) -> UIImage? {
+        if let dir = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false){
+            return UIImage(contentsOfFile: URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(named).path)
+        }
+        
+        return nil
+            
     }
 }
 
